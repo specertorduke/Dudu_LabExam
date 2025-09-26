@@ -30,8 +30,8 @@ const validationRules = {
     },
     studentId: {
         required: true,
-        pattern: /^\d{4}-\d{5}$/,
-        message: 'Student ID should be in format: YYYY-NNNNN (e.g., 2025-12345)'
+        pattern: /^\d{6}$/,
+        message: 'Student ID should be 6 digits (e.g., 123456)'
     },
     department: {
         required: true,
@@ -40,8 +40,8 @@ const validationRules = {
     password: {
         required: true,
         minLength: 8,
-        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-        message: 'Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character'
+        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_\-#])[A-Za-z\d@$!%*?&_\-#]*$/,
+        message: 'Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character (@$!%*?&_-#)'
     },
     confirmPassword: {
         required: true,
@@ -61,39 +61,45 @@ function validateField(fieldName, value, formData = {}) {
     const rules = validationRules[fieldName];
     if (!rules) return { isValid: true, message: '' };
 
+    // Convert value to string if it's not already (handles checkboxes and other form elements)
+    const stringValue = String(value || '');
+
     // Check if field is required
-    if (rules.required && (!value || value.trim() === '')) {
+    if (rules.required && (!value || stringValue.trim() === '')) {
         return { isValid: false, message: `${fieldName} is required` };
     }
 
     // Skip other validations if field is empty and not required
-    if (!value || value.trim() === '') {
+    if (!value || stringValue.trim() === '') {
         return { isValid: true, message: '' };
     }
 
     // Check minimum length
-    if (rules.minLength && value.length < rules.minLength) {
+    if (rules.minLength && stringValue.length < rules.minLength) {
         return { isValid: false, message: `${fieldName} must be at least ${rules.minLength} characters long` };
     }
 
     // Check maximum length
-    if (rules.maxLength && value.length > rules.maxLength) {
+    if (rules.maxLength && stringValue.length > rules.maxLength) {
         return { isValid: false, message: `${fieldName} must not exceed ${rules.maxLength} characters` };
     }
 
     // Check pattern
-    if (rules.pattern && !rules.pattern.test(value)) {
+    if (rules.pattern && !rules.pattern.test(stringValue)) {
         return { isValid: false, message: rules.message };
     }
 
     // Check if field matches another field (for confirm password)
-    if (rules.matchField && formData[rules.matchField] && value !== formData[rules.matchField]) {
+    if (rules.matchField && formData[rules.matchField] && stringValue !== String(formData[rules.matchField] || '')) {
         return { isValid: false, message: rules.message };
     }
 
     // Special validation for checkboxes
-    if (fieldName === 'agreeTerms' && !value) {
-        return { isValid: false, message: rules.message };
+    if (fieldName === 'agreeTerms') {
+        if (rules.required && !value) {
+            return { isValid: false, message: rules.message };
+        }
+        return { isValid: true, message: '' };
     }
 
     return { isValid: true, message: '' };
@@ -219,9 +225,32 @@ function handleLogin(formData) {
         setTimeout(() => {
             // Simple validation - in real app, this would be server-side
             if (formData.username === 'admin' && formData.password === 'Admin123!') {
-                resolve({ success: true, user: { username: formData.username, role: 'admin' } });
+                resolve({ 
+                    success: true, 
+                    user: { 
+                        username: formData.username, 
+                        firstName: 'Admin',
+                        lastName: 'User',
+                        email: 'admin@um.edu.ph',
+                        studentId: '000000',
+                        department: 'administration',
+                        role: 'admin' 
+                    } 
+                });
             } else if (formData.username.length >= 3 && formData.password.length >= 6) {
-                resolve({ success: true, user: { username: formData.username, role: 'student' } });
+                // For demo, create a sample user
+                resolve({ 
+                    success: true, 
+                    user: { 
+                        username: formData.username, 
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        email: `${formData.username}@um.edu.ph`,
+                        studentId: '123456',
+                        department: 'engineering',
+                        role: 'student' 
+                    } 
+                });
             } else {
                 reject({ error: 'Invalid username or password' });
             }
@@ -241,8 +270,12 @@ function handleRegistration(formData) {
                 resolve({ 
                     success: true, 
                     user: { 
-                        username: formData.username, 
+                        username: formData.username,
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
                         email: formData.email,
+                        studentId: formData.studentId,
+                        department: formData.department,
                         role: 'student'
                     } 
                 });
@@ -399,7 +432,11 @@ function initSocialLogin() {
             setTimeout(() => {
                 sessionStorage.setItem('user', JSON.stringify({
                     username: `${provider.toLowerCase()}User`,
+                    firstName: `${provider}`,
+                    lastName: 'User',
                     email: `user@${provider.toLowerCase()}.com`,
+                    studentId: '999999',
+                    department: 'it',
                     role: 'student',
                     provider: provider
                 }));
@@ -442,14 +479,16 @@ function initStudentIdFormatter() {
         studentIdInput.addEventListener('input', function() {
             let value = this.value.replace(/\D/g, ''); // Remove non-digits
             
-            if (value.length >= 4) {
-                value = value.substring(0, 4) + '-' + value.substring(4, 9);
+            // Limit to 6 digits
+            if (value.length > 6) {
+                value = value.substring(0, 6);
             }
             
             this.value = value;
         });
         
-        studentIdInput.setAttribute('placeholder', 'YYYY-NNNNN (e.g., 2025-12345)');
+        studentIdInput.setAttribute('placeholder', '123456');
+        studentIdInput.setAttribute('maxlength', '6');
     }
 }
 

@@ -112,13 +112,13 @@
                                 <i class="fas fa-graduation-cap input-icon"></i>
                                 <select id="department" name="department" required>
                                     <option value="">Select Department</option>
-                                    <option value="engineering">College of Engineering</option>
-                                    <option value="it">College of Information Technology</option>
-                                    <option value="business">College of Business Administration</option>
-                                    <option value="arts">College of Arts & Sciences</option>
-                                    <option value="education">College of Education</option>
-                                    <option value="medicine">College of Medicine</option>
-                                    <option value="nursing">College of Nursing</option>
+                                    <option value="engineering">College of Engineering (CEE)</option>
+                                    <option value="it">College of Computing (CCE)</option>
+                                    <option value="business">College of Business Administration (CBAE)</option>
+                                    <option value="arts">College of Arts & Sciences (CASE)</option>
+                                    <option value="education">College of Teaching (CTE)</option>
+                                    <option value="medicine">College of Fine Arts (CFAE)</option>
+                                    <option value="nursing">College of Criminal Justice (CCJE)</option>
                                 </select>
                                 <label for="department">Department</label>
                             </div>
@@ -127,8 +127,8 @@
                         <div class="form-group">
                             <div class="input-wrapper">
                                 <i class="fas fa-id-card input-icon"></i>
-                                <input type="text" id="studentId" name="studentId" placeholder="Student ID" required>
-                                <label for="studentId">Student ID</label>
+                                <input type="text" id="studentId" name="studentId" placeholder="123456" maxlength="6" required>
+                                <label for="studentId">Student ID (6 digits)</label>
                             </div>
                             <span class="error-message" id="studentIdError"></span>
                         </div>
