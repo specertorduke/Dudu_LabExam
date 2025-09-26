@@ -217,70 +217,80 @@ function initRealTimeValidation() {
 }
 
 // ========================================
+// ========================================
 // FORM SUBMISSION HANDLERS
 // ========================================
 function handleLogin(formData) {
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simple validation - in real app, this would be server-side
-            if (formData.username === 'admin' && formData.password === 'Admin123!') {
-                resolve({ 
-                    success: true, 
-                    user: { 
-                        username: formData.username, 
-                        firstName: 'Admin',
-                        lastName: 'User',
-                        email: 'admin@um.edu.ph',
-                        studentId: '000000',
-                        department: 'administration',
-                        role: 'admin' 
-                    } 
-                });
-            } else if (formData.username.length >= 3 && formData.password.length >= 6) {
-                // For demo, create a sample user
-                resolve({ 
-                    success: true, 
-                    user: { 
-                        username: formData.username, 
-                        firstName: 'John',
-                        lastName: 'Doe',
-                        email: `${formData.username}@um.edu.ph`,
-                        studentId: '123456',
-                        department: 'engineering',
-                        role: 'student' 
-                    } 
-                });
-            } else {
-                reject({ error: 'Invalid username or password' });
-            }
-        }, 1000);
+    console.log('Sending login request with data:', { username: formData.username, password: '[HIDDEN]' });
+    
+    // Send login request to PHP backend
+    return fetch('api/users.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'login',
+            username: formData.username,
+            password: formData.password
+        })
+    })
+    .then(response => {
+        console.log('Login response status:', response.status);
+        console.log('Login response headers:', response.headers);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Parsed login response data:', data);
+        if (data.success) {
+            return data;
+        } else {
+            throw new Error(data.message || 'Login failed');
+        }
+    })
+    .catch(error => {
+        console.error('Login error:', error);
+        throw error;
     });
 }
 
 function handleRegistration(formData) {
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Check if username already exists (simulation)
-            const existingUsers = ['admin', 'test', 'demo'];
-            if (existingUsers.includes(formData.username.toLowerCase())) {
-                reject({ error: 'Username already exists' });
-            } else {
-                resolve({ 
-                    success: true, 
-                    user: { 
-                        username: formData.username,
-                        firstName: formData.firstName,
-                        lastName: formData.lastName,
-                        email: formData.email,
-                        studentId: formData.studentId,
-                        department: formData.department,
-                        role: 'student'
-                    } 
-                });
-            }
-        }, 1500);
+    // Send registration request to PHP backend
+    return fetch('api/users.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'register',
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            username: formData.username,
+            studentId: formData.studentId,
+            department: formData.department,
+            password: formData.password
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            return data;
+        } else {
+            throw new Error(data.message || 'Registration failed');
+        }
+    })
+    .catch(error => {
+        console.error('Registration error:', error);
+        throw error;
     });
 }
 
@@ -314,8 +324,17 @@ function initAuthForms() {
             try {
                 const result = await handleLogin(formData);
                 
+                console.log('Login result:', result); // Debug log
+                console.log('Result type:', typeof result); // Debug log
+                console.log('Result keys:', result ? Object.keys(result) : 'null/undefined'); // Debug log
+                
                 // Store user data (in real app, use secure storage)
-                sessionStorage.setItem('user', JSON.stringify(result.user));
+                if (result && result.user) {
+                    sessionStorage.setItem('user', JSON.stringify(result.user));
+                } else {
+                    console.error('Invalid response structure:', result);
+                    throw new Error('Invalid response from server');
+                }
                 if (formData.rememberMe) {
                     localStorage.setItem('rememberedUser', formData.username);
                 }
@@ -324,7 +343,7 @@ function initAuthForms() {
                 showSuccessModal('Login Successful!', 'Welcome back! You will be redirected to the homepage.');
                 
             } catch (error) {
-                showError('username', error.error || 'Login failed. Please try again.');
+                showError('username', error.message || 'Login failed. Please try again.');
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }
@@ -361,17 +380,29 @@ function initAuthForms() {
             try {
                 const result = await handleRegistration(formData);
                 
+                console.log('Registration result:', result); // Debug log
+                console.log('Registration result type:', typeof result); // Debug log
+                console.log('Registration result keys:', result ? Object.keys(result) : 'null/undefined'); // Debug log
+                
                 // Store user data
-                sessionStorage.setItem('user', JSON.stringify(result.user));
+                if (result && result.user) {
+                    sessionStorage.setItem('user', JSON.stringify(result.user));
+                } else {
+                    console.error('Invalid response structure:', result);
+                    throw new Error('Invalid response from server');
+                }
 
                 // Show success modal
                 showSuccessModal('Registration Successful!', 'Welcome to UM Intramurals! You will be redirected to the homepage.');
                 
             } catch (error) {
-                if (error.error.includes('Username')) {
-                    showError('username', error.error);
+                const errorMessage = error.message || 'Registration failed. Please try again.';
+                if (errorMessage.toLowerCase().includes('username')) {
+                    showError('username', errorMessage);
+                } else if (errorMessage.toLowerCase().includes('email')) {
+                    showError('email', errorMessage);
                 } else {
-                    showError('email', error.error || 'Registration failed. Please try again.');
+                    showError('firstName', errorMessage);
                 }
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;

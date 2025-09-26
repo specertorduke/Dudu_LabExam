@@ -50,8 +50,13 @@ function updateNavigationForLoggedInUser() {
 function updateHeroForLoggedInUser() {
     const heroSubtitle = document.querySelector('.hero-subtitle');
     const heroButtons = document.querySelector('.hero-buttons');
+    const heroSection = document.querySelector('.hero');
     
     if (heroSubtitle && currentUser) {
+        // Add logged-in class to hero section for proper spacing
+        if (heroSection) {
+            heroSection.classList.add('logged-in');
+        }
         // Add personalized welcome message
         const welcomeMessage = document.createElement('div');
         welcomeMessage.className = 'welcome-message';
