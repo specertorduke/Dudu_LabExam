@@ -1,1 +1,15 @@
-[]
+[
+    {
+        "id": 1,
+        "firstName": "akin",
+        "lastName": "na",
+        "email": "a.dumalogdog.547692@umindanao.edu.ph",
+        "username": "anakin",
+        "studentId": "098765",
+        "department": "it",
+        "password": "$2y$10$wEMF5h\/84\/VZhCqZrbAa7.0dUa8zxjIDvvcrqbRpB4\/EDz6q5F7wu",
+        "role": "student",
+        "dateRegistered": "2025-09-26 17:18:54",
+        "lastLogin": "2025-09-26 17:24:07"
+    }
+]

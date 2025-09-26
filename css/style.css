@@ -698,6 +698,13 @@ body {
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif; /* Added font-family */
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+    background: var(--primary-burgundy);
+    color: var(--white);
 }
 
 .tab-btn.active,
@@ -1636,6 +1643,37 @@ body {
     z-index: 10000;
     justify-content: center;
     align-items: center;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;  /* Center the button horizontally */
+    align-items: center;      /* Center the button vertically */
+}
+
+.modal-footer .btn {
+    min-width: 120px;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin: 0 auto;          /* Additional centering */
+}
+
+.modal-footer .btn-primary {
+    background: var(--primary-burgundy);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    display: block;          /* Make button block level */
+    text-align: center;      /* Center the text inside button */
+}
+
+.modal-footer .btn-primary:hover {
+    background: var(--secondary-burgundy);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 21, 56, 0.2);
 }
 
 .modal.show {
