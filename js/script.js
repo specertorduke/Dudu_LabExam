@@ -2,6 +2,7 @@
 // GLOBAL VARIABLES AND UTILITIES
 // ========================================
 let isScrolling = false;
+let currentUser = null;
 
 // Smooth scrolling utility function
 function scrollToSection(sectionId) {
@@ -12,6 +13,230 @@ function scrollToSection(sectionId) {
             block: 'start'
         });
     }
+}
+
+// ========================================
+// USER SESSION MANAGEMENT
+// ========================================
+function checkUserSession() {
+    // Check if user is logged in
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+        currentUser = JSON.parse(userData);
+        updateNavigationForLoggedInUser();
+        return true;
+    }
+    return false;
+}
+
+function updateNavigationForLoggedInUser() {
+    const navMenu = document.getElementById('nav-menu');
+    const loginBtn = navMenu.querySelector('.login-btn');
+    const registerBtn = navMenu.querySelector('.register-btn');
+    
+    if (currentUser && loginBtn && registerBtn) {
+        // Create user info dropdown
+        const userDropdown = createUserDropdown();
+        
+        // Replace login and register buttons with user dropdown
+        loginBtn.replaceWith(userDropdown);
+        registerBtn.remove();
+        
+        // Update hero section for logged-in user
+        updateHeroForLoggedInUser();
+    }
+}
+
+function updateHeroForLoggedInUser() {
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    const heroButtons = document.querySelector('.hero-buttons');
+    const heroSection = document.querySelector('.hero');
+    
+    if (heroSubtitle && currentUser) {
+        // Add logged-in class to hero section for proper spacing
+        if (heroSection) {
+            heroSection.classList.add('logged-in');
+        }
+        // Add personalized welcome message
+        const welcomeMessage = document.createElement('div');
+        welcomeMessage.className = 'welcome-message';
+        welcomeMessage.innerHTML = `
+            <div class="welcome-content">
+                <h3>Welcome back, ${currentUser.firstName || currentUser.username}! 🏆</h3>
+                <p>Ready to dominate the ${getDepartmentShortName(currentUser.department)} tournaments?</p>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-id-card"></i>
+                        <span>ID: ${currentUser.studentId}</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>${getDepartmentShortName(currentUser.department)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insert welcome message before hero buttons
+        heroButtons.parentNode.insertBefore(welcomeMessage, heroButtons);
+        
+        // Update button text for logged-in user
+        const primaryBtn = heroButtons.querySelector('.btn-primary .btn-text') || 
+                          heroButtons.querySelector('.btn-primary');
+        if (primaryBtn) {
+            primaryBtn.innerHTML = '<i class="fas fa-trophy"></i> View My Dashboard';
+        }
+    }
+}
+
+function getDepartmentShortName(dept) {
+    const departments = {
+        'engineering': 'CEE',
+        'it': 'CCE',
+        'business': 'CBAE',
+        'arts': 'CASE',
+        'education': 'CTE',
+        'medicine': 'CFAE',
+        'nursing': 'CCJE',
+        'administration': 'Admin'
+    };
+    return departments[dept] || 'UM';
+}
+
+function createUserDropdown() {
+    const dropdown = document.createElement('div');
+    dropdown.className = 'user-dropdown';
+    dropdown.innerHTML = `
+        <div class="user-info" onclick="toggleDropdown()">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="user-details">
+                <span class="user-name">${currentUser.firstName || currentUser.username}</span>
+                <span class="user-role">${getDepartmentShortName(currentUser.department) || 'Student'}</span>
+            </div>
+            <i class="fas fa-chevron-down dropdown-arrow"></i>
+        </div>
+        <div class="dropdown-menu" id="userDropdownMenu">
+            <div class="dropdown-header">
+                <div class="user-full-info">
+                    <h4>${(currentUser.firstName && currentUser.lastName) ? 
+                        `${currentUser.firstName} ${currentUser.lastName}` : 
+                        currentUser.username}</h4>
+                    <p>ID: ${currentUser.studentId || 'N/A'}</p>
+                    <p>${currentUser.email || ''}</p>
+                    <p>${getDepartmentFullName(currentUser.department) || ''}</p>
+                </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item" onclick="viewProfile()">
+                <i class="fas fa-user"></i>
+                <span>My Profile</span>
+            </a>
+            <a href="#" class="dropdown-item" onclick="viewMyTournaments()">
+                <i class="fas fa-trophy"></i>
+                <span>My Tournaments</span>
+            </a>
+            <a href="#" class="dropdown-item" onclick="viewSettings()">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item logout-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sign Out</span>
+            </a>
+        </div>
+    `;
+    return dropdown;
+}
+
+function getDepartmentFullName(dept) {
+    const departments = {
+        'engineering': 'College of Engineering (CEE)',
+        'it': 'College of Computing (CCE)',
+        'business': 'College of Business Administration (CBAE)',
+        'arts': 'College of Arts & Sciences (CASE)',
+        'education': 'College of Teaching (CTE)',
+        'medicine': 'College of Fine Arts (CFAE)',
+        'nursing': 'College of Criminal Justice (CCJE)'
+    };
+    return departments[dept] || dept;
+}
+
+function toggleDropdown() {
+    const dropdownMenu = document.getElementById('userDropdownMenu');
+    const dropdown = document.querySelector('.user-dropdown');
+    const arrow = dropdown.querySelector('.dropdown-arrow');
+    
+    if (dropdownMenu.classList.contains('show')) {
+        dropdownMenu.classList.remove('show');
+        arrow.style.transform = 'rotate(0deg)';
+    } else {
+        dropdownMenu.classList.add('show');
+        arrow.style.transform = 'rotate(180deg)';
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.querySelector('.user-dropdown');
+    if (dropdown && !dropdown.contains(event.target)) {
+        const dropdownMenu = document.getElementById('userDropdownMenu');
+        const arrow = dropdown.querySelector('.dropdown-arrow');
+        if (dropdownMenu) {
+            dropdownMenu.classList.remove('show');
+            arrow.style.transform = 'rotate(0deg)';
+        }
+    }
+});
+
+// User actions
+function viewProfile() {
+    alert('Profile page would be shown here with detailed user information and statistics.');
+}
+
+function viewMyTournaments() {
+    alert('My Tournaments page would show user\'s registered tournaments, match history, and achievements.');
+}
+
+function viewSettings() {
+    alert('Settings page would allow users to update their profile, change password, and set preferences.');
+}
+
+function logout() {
+    if (confirm('Are you sure you want to sign out?')) {
+        // Clear session data
+        sessionStorage.removeItem('user');
+        localStorage.removeItem('rememberedUser');
+        currentUser = null;
+        
+        // Show success message
+        showLogoutMessage();
+        
+        // Redirect to home page after a short delay
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 2000);
+    }
+}
+
+function showLogoutMessage() {
+    // Create temporary message
+    const message = document.createElement('div');
+    message.className = 'logout-message';
+    message.innerHTML = `
+        <div class="message-content">
+            <i class="fas fa-check-circle"></i>
+            <p>You have been successfully signed out!</p>
+        </div>
+    `;
+    document.body.appendChild(message);
+    
+    // Remove message after animation
+    setTimeout(() => {
+        message.remove();
+    }, 2500);
 }
 
 // ========================================
@@ -301,10 +526,10 @@ function initScrollIndicator() {
 
     // Hide scroll indicator after user scrolls
     window.addEventListener('scroll', function() {
-        if (window.scrollY > 200) {
+        if (scrollIndicator && window.scrollY > 200) {
             scrollIndicator.style.opacity = '0';
             scrollIndicator.style.pointerEvents = 'none';
-        } else {
+        } else if (scrollIndicator) {
             scrollIndicator.style.opacity = '1';
             scrollIndicator.style.pointerEvents = 'auto';
         }
@@ -404,6 +629,9 @@ function initPreloader() {
 // INITIALIZATION
 // ========================================
 document.addEventListener('DOMContentLoaded', function() {
+    // Check user session first
+    checkUserSession();
+    
     // Initialize all features
     initScrollAnimations();
     initSportsSection();
@@ -416,6 +644,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // initPreloader();
     
     console.log('UM Intramurals website loaded successfully! 🏆');
+    if (currentUser) {
+        console.log(`Welcome back, ${currentUser.firstName || currentUser.username}!`);
+    }
 });
 
 // ========================================

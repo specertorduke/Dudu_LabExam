@@ -1,108 +1,3 @@
-<?php
-session_start();
-
-// Handle registration form submission
-if ($_POST && isset($_POST['action']) && $_POST['action'] === 'register') {
-    header('Content-Type: application/json');
-    
-    // Get and sanitize input data
-    $firstName = trim($_POST['firstName'] ?? '');
-    $lastName = trim($_POST['lastName'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $username = trim($_POST['username'] ?? '');
-    $department = trim($_POST['department'] ?? '');
-    $studentId = trim($_POST['studentId'] ?? '');
-    $password = trim($_POST['password'] ?? '');
-    $confirmPassword = trim($_POST['confirmPassword'] ?? '');
-    $agreeTerms = isset($_POST['agreeTerms']);
-    $newsletter = isset($_POST['newsletter']);
-    
-    // Validation
-    $errors = [];
-    
-    if (empty($firstName)) $errors['firstName'] = 'First name is required';
-    if (empty($lastName)) $errors['lastName'] = 'Last name is required';
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Valid email address is required';
-    }
-    if (empty($username) || strlen($username) < 3) {
-        $errors['username'] = 'Username must be at least 3 characters';
-    }
-    if (empty($department)) $errors['department'] = 'Department selection is required';
-    if (empty($studentId)) $errors['studentId'] = 'Student ID is required';
-    if (empty($password) || strlen($password) < 6) {
-        $errors['password'] = 'Password must be at least 6 characters';
-    }
-    if ($password !== $confirmPassword) {
-        $errors['confirmPassword'] = 'Passwords do not match';
-    }
-    if (!$agreeTerms) {
-        $errors['agreeTerms'] = 'You must agree to the terms and conditions';
-    }
-    
-    if (!empty($errors)) {
-        echo json_encode(['success' => false, 'errors' => $errors]);
-        exit;
-    }
-    
-    // Read existing users
-    $usersFile = 'users.json';
-    $users = [];
-    
-    if (file_exists($usersFile)) {
-        $usersJson = file_get_contents($usersFile);
-        $users = json_decode($usersJson, true) ?: [];
-    }
-    
-    // Check for existing username or email
-    foreach ($users as $user) {
-        if ($user['username'] === $username) {
-            echo json_encode(['success' => false, 'errors' => ['username' => 'Username already exists']]);
-            exit;
-        }
-        if ($user['email'] === $email) {
-            echo json_encode(['success' => false, 'errors' => ['email' => 'Email already registered']]);
-            exit;
-        }
-        if ($user['studentId'] === $studentId) {
-            echo json_encode(['success' => false, 'errors' => ['studentId' => 'Student ID already registered']]);
-            exit;
-        }
-    }
-    
-    // Create new user
-    $newUser = [
-        'id' => uniqid('user_', true),
-        'firstName' => $firstName,
-        'lastName' => $lastName,
-        'email' => $email,
-        'username' => $username,
-        'department' => $department,
-        'studentId' => $studentId,
-        'password' => password_hash($password, PASSWORD_DEFAULT),
-        'newsletter' => $newsletter,
-        'registrationDate' => date('Y-m-d H:i:s'),
-        'isActive' => true
-    ];
-    
-    // Add user to array and save
-    $users[] = $newUser;
-    
-    if (file_put_contents($usersFile, json_encode($users, JSON_PRETTY_PRINT))) {
-        // Set session for auto-login
-        $_SESSION['user_id'] = $newUser['id'];
-        $_SESSION['username'] = $newUser['username'];
-        $_SESSION['firstName'] = $newUser['firstName'];
-        $_SESSION['lastName'] = $newUser['lastName'];
-        $_SESSION['department'] = $newUser['department'];
-        
-        echo json_encode(['success' => true, 'message' => 'Registration successful']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to save user data']);
-    }
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,8 +21,8 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'register') {
                 <a href="index.html#sports" class="nav-link">Sports</a>
                 <a href="index.html#tournaments" class="nav-link">Tournaments</a>
                 <a href="index.html#leaderboard" class="nav-link">Leaderboard</a>
-                <a href="login.php" class="nav-link login-btn">Login</a>
-                <a href="register.php" class="nav-link register-btn active">Register</a>
+                <a href="login.html" class="nav-link login-btn">Login</a>
+                <a href="register.html" class="nav-link register-btn active">Register</a>
             </div>
             <div class="hamburger" id="hamburger">
                 <span class="bar"></span>
@@ -273,13 +168,13 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'register') {
                                 <i class="fas fa-graduation-cap input-icon"></i>
                                 <select id="department" name="department" required>
                                     <option value="">Select Department</option>
-                                    <option value="engineering">College of Engineering</option>
-                                    <option value="it">College of Information Technology</option>
-                                    <option value="business">College of Business Administration</option>
-                                    <option value="arts">College of Arts & Sciences</option>
-                                    <option value="education">College of Education</option>
-                                    <option value="medicine">College of Medicine</option>
-                                    <option value="nursing">College of Nursing</option>
+                                    <option value="engineering">College of Engineering (CEE)</option>
+                                    <option value="it">College of Computing (CCE)</option>
+                                    <option value="business">College of Business Administration (CBAE)</option>
+                                    <option value="arts">College of Arts & Sciences (CASE)</option>
+                                    <option value="education">College of Teaching (CTE)</option>
+                                    <option value="medicine">College of Fine Arts (CFAE)</option>
+                                    <option value="nursing">College of Criminal Justice (CCJE)</option>
                                 </select>
                                 <label for="department">Department</label>
                             </div>
@@ -288,8 +183,8 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'register') {
                         <div class="form-group">
                             <div class="input-wrapper">
                                 <i class="fas fa-id-card input-icon"></i>
-                                <input type="text" id="studentId" name="studentId" placeholder="Student ID" required>
-                                <label for="studentId">Student ID</label>
+                                <input type="text" id="studentId" name="studentId" placeholder="123456" maxlength="6" required>
+                                <label for="studentId">Student ID (6 digits)</label>
                             </div>
                             <span class="error-message" id="studentIdError"></span>
                         </div>
@@ -315,12 +210,12 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'register') {
                         </div>
                         <div class="form-options">
                             <label class="checkbox-container">
-                                <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                                <input type="checkbox" id="agreeTerms" required>
                                 <span class="checkmark"></span>
-                                I agree to the <a href="#" class="terms-link">Terms & Conditions</a>
+                                <p>I agree to the <a href="#" class="terms-link"> Terms & Conditions</a></p>
                             </label>
                             <label class="checkbox-container">
-                                <input type="checkbox" id="newsletter" name="newsletter">
+                                <input type="checkbox" id="newsletter">
                                 <span class="checkmark"></span>
                                 Subscribe to tournament updates
                             </label>
@@ -344,7 +239,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'register') {
                         </div>
                     </form>
                     <div class="auth-footer">
-                        <p>Already have an account? <a href="login.php" class="auth-link">Sign in here</a></p>
+                        <p>Already have an account? <a href="login.html" class="auth-link">Sign in here</a></p>
                     </div>
                 </div>
             </div>
@@ -368,157 +263,6 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'register') {
     </div>
 
     <script src="js/script.js"></script>
-    <script>
-        // Enhanced registration form handling
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Clear previous errors
-            clearErrors();
-            
-            const formData = new FormData(this);
-            formData.append('action', 'register');
-            
-            // Show loading state
-            const submitBtn = this.querySelector('.auth-btn');
-            const btnText = submitBtn.querySelector('.btn-text');
-            const originalText = btnText.textContent;
-            btnText.textContent = 'Creating Account...';
-            submitBtn.disabled = true;
-            
-            try {
-                const response = await fetch('register.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Show success modal
-                    document.getElementById('successModal').style.display = 'block';
-                    
-                    // Start countdown
-                    let countdown = 3;
-                    const countdownElement = document.getElementById('countdown');
-                    const countdownInterval = setInterval(() => {
-                        countdown--;
-                        countdownElement.textContent = countdown;
-                        if (countdown <= 0) {
-                            clearInterval(countdownInterval);
-                            window.location.href = 'index.html';
-                        }
-                    }, 1000);
-                } else {
-                    // Handle validation errors
-                    if (result.errors) {
-                        displayErrors(result.errors);
-                    } else {
-                        alert(result.message || 'Registration failed. Please try again.');
-                    }
-                }
-            } catch (error) {
-                alert('An error occurred. Please try again.');
-                console.error('Registration error:', error);
-            }
-            
-            // Reset button state
-            btnText.textContent = originalText;
-            submitBtn.disabled = false;
-        });
-        
-        // Function to clear all error messages
-        function clearErrors() {
-            const errorElements = document.querySelectorAll('.error-message');
-            errorElements.forEach(element => {
-                element.textContent = '';
-                element.parentElement.querySelector('.input-wrapper').classList.remove('error');
-            });
-        }
-        
-        // Function to display validation errors
-        function displayErrors(errors) {
-            Object.keys(errors).forEach(field => {
-                const errorElement = document.getElementById(field + 'Error');
-                const inputWrapper = document.querySelector(`#${field}`).closest('.input-wrapper');
-                
-                if (errorElement && inputWrapper) {
-                    errorElement.textContent = errors[field];
-                    inputWrapper.classList.add('error');
-                }
-            });
-        }
-        
-        // Password toggle functionality
-        document.querySelectorAll('.toggle-password').forEach(toggle => {
-            toggle.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const passwordInput = document.getElementById(targetId);
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                this.classList.toggle('fa-eye-slash');
-            });
-        });
-        
-        // Real-time password confirmation validation
-        document.getElementById('confirmPassword').addEventListener('input', function() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = this.value;
-            const errorElement = document.getElementById('confirmPasswordError');
-            const inputWrapper = this.closest('.input-wrapper');
-            
-            if (confirmPassword && password !== confirmPassword) {
-                errorElement.textContent = 'Passwords do not match';
-                inputWrapper.classList.add('error');
-            } else {
-                errorElement.textContent = '';
-                inputWrapper.classList.remove('error');
-            }
-        });
-        
-        // Username validation (basic)
-        document.getElementById('username').addEventListener('blur', function() {
-            const username = this.value.trim();
-            const errorElement = document.getElementById('usernameError');
-            const inputWrapper = this.closest('.input-wrapper');
-            
-            if (username.length > 0 && username.length < 3) {
-                errorElement.textContent = 'Username must be at least 3 characters';
-                inputWrapper.classList.add('error');
-            } else {
-                errorElement.textContent = '';
-                inputWrapper.classList.remove('error');
-            }
-        });
-        
-        // Email validation
-        document.getElementById('email').addEventListener('blur', function() {
-            const email = this.value.trim();
-            const errorElement = document.getElementById('emailError');
-            const inputWrapper = this.closest('.input-wrapper');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (email && !emailRegex.test(email)) {
-                errorElement.textContent = 'Please enter a valid email address';
-                inputWrapper.classList.add('error');
-            } else {
-                errorElement.textContent = '';
-                inputWrapper.classList.remove('error');
-            }
-        });
-        
-        // Redirect function for modal
-        function redirectToHome() {
-            window.location.href = 'index.html';
-        }
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('successModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    </script>
+    <script src="js/auth.js"></script>
 </body>
 </html>
