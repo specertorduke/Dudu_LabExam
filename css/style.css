@@ -75,10 +75,11 @@ body {
     text-decoration: none;
 }
 
-.nav-logo i {
-    color: var(--accent-gold);
-    margin-right: 10px;
-    font-size: 1.8rem;
+.nav-logo-img {
+    width: 50px;    /* smaller size */
+    height: 50px;   /* smaller size */
+    margin-right: 0.5rem;
+    object-fit: contain;
 }
 
 .nav-menu {
