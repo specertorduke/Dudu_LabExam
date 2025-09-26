@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UM Intramurals - Compete. Connect. Conquer.</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-trophy"></i>
+                <span>UM Intramurals</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#sports" class="nav-link">Sports</a>
+                <a href="#tournaments" class="nav-link">Tournaments</a>
+                <a href="#leaderboard" class="nav-link">Leaderboard</a>
+                <a href="login.html" class="nav-link login-btn">Login</a>
+                <a href="register.html" class="nav-link register-btn">Register</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="animated-bg"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="text-animate">Compete.</span>
+                    <span class="text-animate">Connect.</span>
+                    <span class="text-animate">Conquer.</span>
+                </h1>
+                <p class="hero-subtitle">Join the most exciting intramural sports program in the University of Mindanao</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary pulse-btn" onclick="scrollToSection('sports')">
+                        <i class="fas fa-play"></i> Start Your Journey
+                    </button>
+                    <button class="btn btn-secondary" onclick="scrollToSection('tournaments')">
+                        <i class="fas fa-calendar"></i> View Schedule
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-trophy">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="floating-medal">
+                    <i class="fas fa-medal"></i>
+                </div>
+                <div class="floating-star">
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sports Categories Section -->
+    <section id="sports" class="sports-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Choose Your Sport</h2>
+                <p class="section-subtitle">Discover your passion and unleash your potential</p>
+            </div>
+            <div class="sports-grid">
+                <div class="sport-card" data-sport="basketball">
+                    <div class="sport-icon">
+                        <i class="fas fa-basketball-ball"></i>
+                    </div>
+                    <h3>Basketball</h3>
+                    <p>Fast-paced action and teamwork</p>
+                    <div class="sport-stats">
+                        <span class="stat">8 Teams</span>
+                        <span class="stat">24 Players</span>
+                    </div>
+                </div>
+                <div class="sport-card" data-sport="volleyball">
+                    <div class="sport-icon">
+                        <i class="fas fa-volleyball-ball"></i>
+                    </div>
+                    <h3>Volleyball</h3>
+                    <p>Spike your way to victory</p>
+                    <div class="sport-stats">
+                        <span class="stat">12 Teams</span>
+                        <span class="stat">36 Players</span>
+                    </div>
+                </div>
+                <div class="sport-card" data-sport="football">
+                    <div class="sport-icon">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <h3>Football</h3>
+                    <p>The beautiful game awaits</p>
+                    <div class="sport-stats">
+                        <span class="stat">6 Teams</span>
+                        <span class="stat">18 Players</span>
+                    </div>
+                </div>
+                <div class="sport-card" data-sport="badminton">
+                    <div class="sport-icon">
+                        <i class="fas fa-skating"></i>
+                    </div>
+                    <h3>Badminton</h3>
+                    <p>Precision meets agility</p>
+                    <div class="sport-stats">
+                        <span class="stat">16 Teams</span>
+                        <span class="stat">32 Players</span>
+                    </div>
+                </div>
+                <div class="sport-card" data-sport="table-tennis">
+                    <div class="sport-icon">
+                        <i class="fas fa-table-tennis"></i>
+                    </div>
+                    <h3>Table Tennis</h3>
+                    <p>Lightning-fast reflexes</p>
+                    <div class="sport-stats">
+                        <span class="stat">20 Teams</span>
+                        <span class="stat">40 Players</span>
+                    </div>
+                </div>
+                <div class="sport-card" data-sport="chess">
+                    <div class="sport-icon">
+                        <i class="fas fa-chess"></i>
+                    </div>
+                    <h3>Chess</h3>
+                    <p>Strategic mind battles</p>
+                    <div class="sport-stats">
+                        <span class="stat">24 Teams</span>
+                        <span class="stat">48 Players</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Tournament Section -->
+    <section id="tournaments" class="tournament-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Live Tournaments</h2>
+                <p class="section-subtitle">Watch the action unfold in real-time</p>
+            </div>
+            <div class="tournament-dashboard">
+                <div class="tournament-tabs">
+                    <button class="tab-btn active" data-tab="ongoing">Ongoing</button>
+                    <button class="tab-btn" data-tab="upcoming">Upcoming</button>
+                    <button class="tab-btn" data-tab="completed">Completed</button>
+                </div>
+                <div class="tournament-content">
+                    <div class="tab-content active" id="ongoing">
+                        <div class="match-card live">
+                            <div class="match-header">
+                                <span class="live-indicator">
+                                    <i class="fas fa-circle"></i> LIVE
+                                </span>
+                                <span class="match-time">2nd Quarter - 15:32</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team">
+                                    <div class="team-name">Engineering Eagles</div>
+                                    <div class="team-score">68</div>
+                                </div>
+                                <div class="vs">VS</div>
+                                <div class="team">
+                                    <div class="team-name">IT Warriors</div>
+                                    <div class="team-score">72</div>
+                                </div>
+                            </div>
+                            <div class="match-sport">
+                                <i class="fas fa-basketball-ball"></i>
+                                <span>Basketball - Championship</span>
+                            </div>
+                        </div>
+                        <div class="match-card">
+                            <div class="match-header">
+                                <span class="match-status">Next Up</span>
+                                <span class="match-time">3:00 PM</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team">
+                                    <div class="team-name">Business Bulldogs</div>
+                                    <div class="team-score">-</div>
+                                </div>
+                                <div class="vs">VS</div>
+                                <div class="team">
+                                    <div class="team-name">Arts Aces</div>
+                                    <div class="team-score">-</div>
+                                </div>
+                            </div>
+                            <div class="match-sport">
+                                <i class="fas fa-volleyball-ball"></i>
+                                <span>Volleyball - Semi-Final</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="leaderboard-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Hall of Fame</h2>
+                <p class="section-subtitle">Champions who made their mark</p>
+            </div>
+            <div class="leaderboard-container">
+                <div class="podium">
+                    <div class="podium-position second">
+                        <div class="position-number">2</div>
+                        <div class="college-info">
+                            <h3>IT Department</h3>
+                            <p>890 Points</p>
+                        </div>
+                        <div class="trophy-icon">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                    </div>
+                    <div class="podium-position first">
+                        <div class="position-number">1</div>
+                        <div class="college-info">
+                            <h3>Engineering</h3>
+                            <p>1,250 Points</p>
+                        </div>
+                        <div class="trophy-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                    </div>
+                    <div class="podium-position third">
+                        <div class="position-number">3</div>
+                        <div class="college-info">
+                            <h3>Business</h3>
+                            <p>750 Points</p>
+                        </div>
+                        <div class="trophy-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="rankings-table">
+                    <div class="ranking-item">
+                        <span class="rank">4</span>
+                        <span class="college">Arts & Sciences</span>
+                        <span class="points">680</span>
+                    </div>
+                    <div class="ranking-item">
+                        <span class="rank">5</span>
+                        <span class="college">Education</span>
+                        <span class="points">620</span>
+                    </div>
+                    <div class="ranking-item">
+                        <span class="rank">6</span>
+                        <span class="college">Medicine</span>
+                        <span class="points">580</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-trophy"></i> UM Intramurals</h3>
+                    <p>Building champions, one game at a time.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#sports">Sports</a></li>
+                        <li><a href="#tournaments">Tournaments</a></li>
+                        <li><a href="#leaderboard">Leaderboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> University of Mindanao, Davao City</p>
+                    <p><i class="fas fa-phone"></i> (082) 227-8885</p>
+                    <p><i class="fas fa-envelope"></i> intramurals@um.edu.ph</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 University of Mindanao Intramurals. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

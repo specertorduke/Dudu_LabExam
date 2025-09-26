@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - UM Intramurals</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-trophy"></i>
+                <span>UM Intramurals</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#sports" class="nav-link">Sports</a>
+                <a href="index.html#tournaments" class="nav-link">Tournaments</a>
+                <a href="index.html#leaderboard" class="nav-link">Leaderboard</a>
+                <a href="login.html" class="nav-link login-btn active">Login</a>
+                <a href="register.html" class="nav-link register-btn">Register</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="auth-section">
+        <div class="auth-container">
+            <div class="auth-visual">
+                <div class="visual-content">
+                    <h2>Welcome Back, Champion!</h2>
+                    <p>Ready to continue your journey to greatness?</p>
+                    <div class="animated-elements">
+                        <div class="floating-element trophy">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="floating-element medal">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <div class="floating-element star">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="auth-form-container">
+                <div class="form-wrapper">
+                    <div class="form-header">
+                        <h1>Sign In</h1>
+                        <p>Enter your credentials to access your account</p>
+                    </div>
+                    <form class="auth-form" id="loginForm">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="username" name="username" placeholder="Username" required>
+                                <label for="username">Username</label>
+                            </div>
+                            <span class="error-message" id="usernameError"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="password" name="password" placeholder="Password" required>
+                                <label for="password">Password</label>
+                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                            </div>
+                            <span class="error-message" id="passwordError"></span>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary auth-btn">
+                            <span class="btn-text">Sign In</span>
+                            <i class="fas fa-arrow-right btn-icon"></i>
+                        </button>
+                        <div class="divider">
+                            <span>or</span>
+                        </div>
+                        <div class="social-login">
+                            <button type="button" class="social-btn google-btn">
+                                <i class="fab fa-google"></i>
+                                Sign in with Google
+                            </button>
+                            <button type="button" class="social-btn facebook-btn">
+                                <i class="fab fa-facebook-f"></i>
+                                Sign in with Facebook
+                            </button>
+                        </div>
+                    </form>
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a href="register.html" class="auth-link">Sign up here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h3>Login Successful!</h3>
+            </div>
+            <div class="modal-body">
+                <p>Welcome back! You will be redirected to the homepage in <span id="countdown">3</span> seconds.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="redirectToHome()">Go Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
