@@ -1,3 +1,65 @@
+<?php
+session_start();
+
+// Handle login form submission
+if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
+    header('Content-Type: application/json');
+    
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $rememberMe = isset($_POST['rememberMe']);
+    
+    // Validate input
+    if (empty($username) || empty($password)) {
+        echo json_encode(['success' => false, 'message' => 'Username and password are required']);
+        exit;
+    }
+    
+    // Read users from JSON file
+    $usersFile = 'users.json';
+    if (!file_exists($usersFile)) {
+        echo json_encode(['success' => false, 'message' => 'User database not found']);
+        exit;
+    }
+    
+    $usersJson = file_get_contents($usersFile);
+    $users = json_decode($usersJson, true);
+    
+    if (!$users) {
+        echo json_encode(['success' => false, 'message' => 'Error reading user database']);
+        exit;
+    }
+    
+    // Check credentials
+    $userFound = false;
+    foreach ($users as $user) {
+        if (($user['username'] === $username || $user['email'] === $username) && 
+            password_verify($password, $user['password'])) {
+            $userFound = true;
+            
+            // Set session
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['firstName'] = $user['firstName'];
+            $_SESSION['lastName'] = $user['lastName'];
+            $_SESSION['department'] = $user['department'];
+            
+            // Set remember me cookie if requested
+            if ($rememberMe) {
+                setcookie('remember_user', $user['username'], time() + (30 * 24 * 60 * 60)); // 30 days
+            }
+            
+            echo json_encode(['success' => true, 'message' => 'Login successful']);
+            exit;
+        }
+    }
+    
+    if (!$userFound) {
+        echo json_encode(['success' => false, 'message' => 'Invalid username or password']);
+        exit;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,8 +83,8 @@
                 <a href="index.html#sports" class="nav-link">Sports</a>
                 <a href="index.html#tournaments" class="nav-link">Tournaments</a>
                 <a href="index.html#leaderboard" class="nav-link">Leaderboard</a>
-                <a href="login.html" class="nav-link login-btn active">Login</a>
-                <a href="register.html" class="nav-link register-btn">Register</a>
+                <a href="login.php" class="nav-link login-btn active">Login</a>
+                <a href="register.php" class="nav-link register-btn">Register</a>
             </div>
             <div class="hamburger" id="hamburger">
                 <span class="bar"></span>
@@ -84,8 +146,6 @@
                                 </div>
                                 <div class="event-status live">LIVE</div>
                             </div>
-                
-        
                         </div>
                     </div>
 
@@ -112,8 +172,8 @@
                         <div class="form-group">
                             <div class="input-wrapper">
                                 <i class="fas fa-user input-icon"></i>
-                                <input type="text" id="username" name="username" placeholder="Username" required>
-                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" placeholder="Username or Email" required value="<?php echo isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['remember_user']) : ''; ?>">
+                                <label for="username">Username or Email</label>
                             </div>
                             <span class="error-message" id="usernameError"></span>
                         </div>
@@ -128,7 +188,7 @@
                         </div>
                         <div class="form-options">
                             <label class="checkbox-container">
-                                <input type="checkbox" id="rememberMe">
+                                <input type="checkbox" id="rememberMe" name="rememberMe" <?php echo isset($_COOKIE['remember_user']) ? 'checked' : ''; ?>>
                                 <span class="checkmark"></span>
                                 Remember me
                             </label>
@@ -153,7 +213,7 @@
                         </div>
                     </form>
                     <div class="auth-footer">
-                        <p>Don't have an account? <a href="register.html" class="auth-link">Sign up here</a></p>
+                        <p>Don't have an account? <a href="register.php" class="auth-link">Sign up here</a></p>
                     </div>
                 </div>
             </div>
@@ -177,6 +237,77 @@
     </div>
 
     <script src="js/script.js"></script>
-    <script src="js/auth.js"></script>
+    <script>
+        // Enhanced login form handling
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('action', 'login');
+            
+            // Show loading state
+            const submitBtn = this.querySelector('.auth-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const originalText = btnText.textContent;
+            btnText.textContent = 'Signing In...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('login.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success modal
+                    document.getElementById('successModal').style.display = 'block';
+                    
+                    // Start countdown
+                    let countdown = 3;
+                    const countdownElement = document.getElementById('countdown');
+                    const countdownInterval = setInterval(() => {
+                        countdown--;
+                        countdownElement.textContent = countdown;
+                        if (countdown <= 0) {
+                            clearInterval(countdownInterval);
+                            window.location.href = 'index.html';
+                        }
+                    }, 1000);
+                } else {
+                    // Show error message
+                    alert(result.message);
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+            }
+            
+            // Reset button state
+            btnText.textContent = originalText;
+            submitBtn.disabled = false;
+        });
+        
+        // Password toggle functionality
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+        
+        // Redirect function for modal
+        function redirectToHome() {
+            window.location.href = 'index.html';
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('successModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
