@@ -107,21 +107,71 @@ body {
     color: var(--accent-gold);
 }
 
+/* Page Indicators for Login/Register */
+.login-btn.active {
+    background: var(--dark-primary);
+    box-shadow: 0 0 15px rgba(216, 64, 64, 0.3);
+}
+
+.login-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+}
+
+.register-btn.active {
+    background: var(--accent-gold);
+    box-shadow: 0 0 15px rgba(245, 230, 211, 0.3);
+}
+
+.register-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--accent-gold);
+    border-radius: 50%;
+}
+
+.login-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--accent-gold);
+    border-radius: 50%;
+}
+
 .nav-link::after {
     content: '';
     position: absolute;
-    width: 0;
+    width: 100%;
     height: 2px;
-    bottom: 0;
-    left: 50%;
-    background: var(--accent-gold);
-    transition: all 0.3s ease;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--accent-gold);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
 }
 
-.nav-link:hover::after,
-.nav-link.active::after {
-    width: 100%;
-    left: 0;
+
+.nav-link:not(.login-btn):not(.register-btn):hover::after,
+.nav-link:not(.login-btn):not(.register-btn).active::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 .login-btn {
@@ -141,9 +191,13 @@ body {
 }
 
 .register-btn:hover {
-    background: var(--light-gold);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+    background: var(--accent-gold);
+    color: var(--primary);
+}
+
+.register-btn.active {
+    background: var(--accent-gold);
+    color: #4a1515; /* Darker text color when selected/active */
 }
 
 .hamburger {
