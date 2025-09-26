@@ -607,6 +607,13 @@ body {
     z-index: 1;
 }
 
+.sport-icon-img {
+    width: 4rem;  /* Match the size of Font Awesome icons */
+    height: 4rem;
+    object-fit: contain; /* Maintain aspect ratio */
+    color: var(--primary-burgundy); /* Match the icon color */
+}
+
 .sport-card:hover .sport-icon {
     color: var(--accent-gold);
     transform: scale(1.1);
@@ -977,6 +984,7 @@ body {
     color: var(--white);
     font-size: 1.2rem;
     transition: all 0.3s ease;
+    text-decoration: none; /* Remove underline */
 }
 
 .social-links a:hover {
@@ -1071,6 +1079,211 @@ body {
 .benefit i {
     color: var(--accent-gold);
     font-size: 1.5rem;
+}
+
+.terms-content {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.terms-content h3 {
+    color: var(--accent-gold);
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.terms-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.terms-section h4 {
+    color: var(--accent-gold);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.terms-section h4 i {
+    font-size: 1rem;
+}
+
+.terms-list {
+    margin: 15px 0;
+}
+
+/* Quick Stats Styles */
+.quick-stats {
+    margin: 30px 0;
+}
+
+.quick-stats h3 {
+    color: var(--accent-gold);
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+.stat-card i {
+    color: var(--accent-gold);
+    font-size: 1.5rem;
+}
+
+.stat-info h4 {
+    color: var(--white);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    opacity: 0.8;
+}
+
+.stat-number {
+    color: var(--accent-gold);
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Upcoming Events Styles */
+.upcoming-events {
+    margin: 30px 0;
+}
+
+.upcoming-events h3 {
+    color: var(--accent-gold);
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.event-list {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 5px;
+}
+
+.event-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.event-item:last-child {
+    border-bottom: none;
+}
+
+.event-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.event-time {
+    color: var(--accent-gold);
+    font-weight: 600;
+    min-width: 80px;
+}
+
+.event-details {
+    flex-grow: 1;
+    margin: 0 15px;
+}
+
+.event-details h4 {
+    color: var(--white);
+    font-size: 1rem;
+    margin-bottom: 3px;
+}
+
+.event-details p {
+    color: var(--white);
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+.event-status {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.event-status.live {
+    background: rgba(255, 71, 87, 0.2);
+    color: #ff4757;
+}
+
+.event-status.upcoming {
+    background: rgba(255, 215, 0, 0.2);
+    color: var(--accent-gold);
+}
+
+.term-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    color: var(--white);
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+.term-item:last-child {
+    margin-bottom: 0;
+}
+
+.term-item i {
+    color: var(--accent-gold);
+    font-size: 1rem;
+}
+
+.term-item:hover {
+    opacity: 1;
+    transform: translateX(5px);
+    transition: all 0.3s ease;
+}
+
+.auth-visual {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 600px; /* Match the approximate height of the form container */
 }
 
 .benefit span {
